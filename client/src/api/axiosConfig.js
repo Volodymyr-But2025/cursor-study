@@ -32,11 +32,13 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear token on authentication failure
-      localStorage.removeItem('token')
-      // Only redirect if not already on login page to avoid loops
-      if (!window.location.pathname.startsWith('/admin') || window.location.pathname !== '/admin') {
-        window.location.href = '/admin'
+      const isLoginRequest = error.config?.url?.includes('/api/admin/login')
+
+      if (!isLoginRequest) {
+        localStorage.removeItem('token')
+        if (window.location.pathname !== '/admin') {
+          window.location.href = '/admin'
+        }
       }
     }
     return Promise.reject(error)

@@ -30,6 +30,7 @@ function Login() {
         setToken(response.data.token)
         localStorage.setItem('token', response.data.token)
         toast.success(t('messages.success.login'))
+        navigate(ROUTES.ADMIN)
       } else {
         toast.error(response.data.message || t('messages.error.login'))
       }
