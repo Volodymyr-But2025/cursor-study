@@ -1,0 +1,123 @@
+# StudySprint — Cursor Rules
+# Full-stack blog monorepo: React 19 + Vite 6 (client) | Express 5 + Mongoose 8 (server)
+
+## Project Context
+
+- Monorepo: `client/` (SPA) + `server/` (REST API). No root package.json.
+- Client dev: `cd client && npm run dev` (port 5173). Server: `cd server && npm run server` (port 5001).
+- First-time setup: `cd server && npm run setup` (Docker MongoDB + seed), then start client.
+- Env: `client/.env` → `VITE_BASE_URL`; `server/.env` → `MONGODB_URI`, `JWT_SECRET`, optional `GEMINI_API_KEY`, `CLIENT_URL`.
+- API response contract (both sides): `{ success: boolean, message?: string, ...payload }`.
+- Do not commit `.env` files. Update `.env.example` when adding env vars.
+
+---
+
+## Tech Stack — Client (`client/`)
+
+### Stack
+React 19, Vite 6, React Router 7, Ant Design 6, Axios, i18next, Quill, DOMPurify, marked, moment, react-hot-toast.
+
+### Rules
+- **Language:** New files MUST be `.ts`/`.tsx`. Convert touched `.js`/`.jsx` to TypeScript when changes are non-trivial.
+- **Imports:** Use `@/` alias for `src/` (see `vite.config.js`). Prefer named exports; barrel `index.ts` per folder.
+- **Routing:** Define paths in `src/constants/routes.ts`. Protected admin routes check `token` from `AppContext`.
+- **API layer:** Domain modules in `src/api/` (`blogApi`, `commentApi`, `adminApi`). Endpoints ONLY in `src/constants/apiEndpoints.ts`. Never hardcode URLs in components.
+- **Data fetching:** Use existing hook stack — `useApiQuery` (GET/auto-fetch), `useApiMutation` (mutations + toast/confirm), domain hooks in `hooks/api/queries/` and `hooks/api/mutations/`. Do NOT add Redux, Zustand, or React Query.
+- **Global state:** `AppContext` for auth token, search input, shared `axios`, `navigate`. Server state stays in hooks, not context.
+- **UI:** Ant Design components + `ConfigProvider` theme tokens. Colocated `ComponentName.css` per component. Use `theme.useToken()` for spacing/colors. No Tailwind, CSS Modules, or styled-components.
+- **Forms:** Use `useForm` from `hooks/utils/`. Validate with `utils/validators.ts`.
+- **i18n:** All user-facing strings via `react-i18next` (`useTranslation`). Add keys to `src/i18n/locales/en.json`.
+- **Rich text:** Quill for editing; render HTML via `marked` + **always** sanitize with `DOMPurify` before `dangerouslySetInnerHTML`.
+- **Dates:** Use `moment` consistently (match existing code). Consider `dayjs` only if migrating project-wide.
+- **Notifications:** `react-hot-toast` via hooks; do not duplicate toast logic in components.
+- **Components:** PascalCase files (`BlogList.tsx`). Feature-based pages under `pages/public/` and `pages/admin/` with colocated subcomponents.
+
+---
+
+## Tech Stack — Server (`server/`)
+
+### Stack
+Node.js ESM (`"type": "module"`), Express 5, Mongoose 8, JWT, bcryptjs, multer, helmet, cors, express-rate-limit, migrate-mongo, @google/genai.
+
+### Rules
+- **Language:** New files MUST be `.ts`. Convert touched `.js` when changes are non-trivial. Use `tsx` or compile step if adding TS build.
+- **Architecture:** `routes/` → `controllers/` → `models/`. No fat routes. Business logic in controllers (no service layer unless complexity demands extraction).
+- **Async:** Wrap ALL async route handlers with `asyncHandler` from `src/helpers/asyncHandler.ts`. Do not use try/catch in every controller — rely on global `errorHandler`.
+- **Responses:** Always return `{ success: true/false, message?, ...data }`. Use appropriate HTTP status codes (400 validation, 401 auth, 404 not found, 500 server).
+- **Validation:** Input validation in `src/validators/`. Return `{ success: false, message: 'Validation failed', errors: [...] }` with status 400.
+- **Auth:** JWT via `src/middleware/auth.ts`. Token in `Authorization: Bearer <token>`. Public routes BEFORE `router.use(auth)`.
+- **Models:** Mongoose schemas in `src/models/`. Use `{ timestamps: true }`, indexes via migrations (`migrate-mongo`), `toJSON` transforms to strip sensitive fields (e.g. password).
+- **Uploads:** Multer → `uploads/blogs/`. Transform stored paths with `utils/imageUrl.ts` in responses. Delete orphaned files on blog delete.
+- **Security:** helmet + cors whitelist + rate limiters (`rateLimiter.ts`). Wire `express-mongo-sanitize` if handling user input in queries. Never log secrets or JWTs.
+- **Migrations:** Schema/index changes via `migrations/` + `npm run migrate:up`. Update `fixtures/` and `scripts/seed.js` when seed data changes.
+- **AI:** Gemini calls only in controller layer via `configs/gemini.ts`. Rate-limit AI endpoints. Handle API failures gracefully.
+- **Logging:** Use `httpLogger` and `dbLogger`; no raw `console.log` in production paths.
+
+---
+
+## TypeScript Policy (Strict)
+
+- Enable `strict: true` when adding `tsconfig.json` to client and server.
+- **Ban `any`.** Use `unknown` + type guards, generics, or explicit interfaces. `any` only with inline comment: `// any-ok: <reason>`.
+- Define shared types:
+  - `client/src/types/` — `Blog`, `Comment`, `User`, `ApiResponse<T>`, hook return types.
+  - `server/src/types/` — `AuthPayload`, `ApiResponse`, Express `Request` augmentation (`req.user`).
+- Prefer `interface` for object shapes, `type` for unions/intersections.
+- Mongoose: use `HydratedDocument`, `InferSchemaType`, or explicit document interfaces.
+- Axios: type API responses as `AxiosResponse<ApiResponse<T>>`.
+- React: type props with `interface XxxProps`. Type custom hooks' return values explicitly.
+- Legacy JS (until migrated): add `// @ts-check` at top + JSDoc `@typedef` / `@param` / `@returns`. No untyped public APIs.
+
+---
+
+## Error Handling & Production Readiness
+
+### Client
+- Every data-dependent UI MUST handle `loading`, `error`, and empty states.
+- API hooks already set `error` and show toasts — components must render fallback UI (Loader, Alert, retry button).
+- Axios 401 is handled globally (clear token, redirect `/admin`). Do not duplicate.
+- Never swallow errors silently. Never leave `catch {}` empty.
+
+### Server
+- Throw errors with `statusCode` for global handler, or return explicit `res.status().json()`.
+- Validate all inputs before DB operations.
+- Handle Mongoose errors (`ValidationError`, `CastError`, duplicate key) in `errorHandler`.
+- File operations (multer, fs.unlink): handle missing files without crashing.
+
+### General
+- **No `// TODO`, `// FIXME`, or placeholder implementations.** Ship complete, working code.
+- **No debug leftovers:** remove `console.log`, commented-out blocks, unused imports.
+- Update `.env.example` when adding configuration.
+
+---
+
+## Code Quality
+
+- **SRP:** One responsibility per file/function. Extract when a controller/hook exceeds ~80 lines.
+- **DRY:** Reuse `useApiQuery`, `useApiMutation`, `asyncHandler`, validators, formatters. Do not duplicate API/error patterns.
+- **SOLID:** Depend on abstractions (api modules, hooks), not raw axios in components. Open for extension via new hooks, not modification of core hooks.
+- **Naming:** camelCase (functions, files), PascalCase (components, models), UPPER_SNAKE (constants).
+- **Exports:** Named exports for utilities/hooks; default export for React components.
+- **Minimal diff:** Do not refactor unrelated code. Match existing style in the file you edit.
+- **Comments:** Only for non-obvious business logic. No narrating comments (`// increment counter`).
+- **Dependencies:** Do not add packages without clear need. Prefer existing stack (Ant Design, moment, etc.).
+
+---
+
+## Testing & Linting
+
+- Client: `cd client && npm run lint` (ESLint 9 flat config). Fix lint errors before finishing.
+- Server: No ESLint yet — follow conventions above. Consider adding ESLint in future.
+- Manual test plan after changes: auth flow, blog CRUD, comment moderation, image upload, AI generate (if touched).
+
+---
+
+## AI Assistant Behavior
+
+- **Style:** Concise, direct, code-first. Minimal filler. Lead with the solution.
+- **Language:** Ukrainian for explanations to the user; English for code, commits, and rule files.
+- **"Поясни"** → explain only, no code changes.
+- **"Зроби"** → implement complete solution with loading/error handling.
+- **Commits:** Only when explicitly asked. Never commit `.env` or secrets.
+- **Scope:** `client/` and `server/` are independent — run commands from the correct directory.
+- When creating new features, follow existing folder structure and hook patterns documented in `client/src/hooks/README.md`.
