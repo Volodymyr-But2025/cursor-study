@@ -96,8 +96,9 @@
       "subtitleLabel": "Subtitle",
       "categoryLabel": "Category",
       "categoryPlaceholder": "Select Category",
-      "bodyLabel": "Article text",
+      "bodyLabel": "Body",
       "generateAI": "Generate with AI",
+      "generateLoading": "Generating...",
       "publishButton": "Publish Article",
       "saveDraft": "Save Draft"
     },
@@ -170,7 +171,8 @@
     "commentRequired": "Please enter your comment",
     "titleRequired": "Please enter article title",
     "subtitleRequired": "Please enter subtitle",
-    "categoryRequired": "Please select a category"
+    "categoryRequired": "Please select a category",
+    "bodyRequired": "Please add blog description"
   },
   "messages": {
     "success": {
@@ -196,7 +198,8 @@
       "blogTitleMin": "Please enter at least a title",
       "invalidEmail": "Please enter a valid email address",
       "imageType": "You can only upload image files!",
-      "imageSize": "Image must be smaller than 5MB!"
+      "imageSize": "Image must be smaller than 5MB!",
+      "aiGenerate": "AI generation failed. Please try again."
     },
     "info": {
       "registrationComingSoon": "Registration feature coming soon!"

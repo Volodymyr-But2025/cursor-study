@@ -1,7 +1,7 @@
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import 'dotenv/config'
+import dotenv from 'dotenv'
 import cors from 'cors'
 import helmet from 'helmet'
 import connectDB from './src/configs/db.js'
@@ -16,6 +16,15 @@ import blogRouter from './src/routes/blogRoutes.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+dotenv.config({ path: path.join(__dirname, '.env') })
+
+const geminiKey = process.env.GEMINI_API_KEY?.trim()
+if (!geminiKey || geminiKey === 'your_gemini_api_key_here') {
+  console.warn('⚠️  GEMINI_API_KEY is missing. POST /api/blog/generate will return 503.')
+} else {
+  process.env.GEMINI_API_KEY = geminiKey
+}
 
 const app = express()
 

@@ -1,13 +1,14 @@
 import React from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
-import { Menu, Flex } from 'antd'
-import { AppstoreOutlined, UnorderedListOutlined, CommentOutlined } from '@ant-design/icons'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Menu, Flex, Button } from 'antd'
+import { AppstoreOutlined, PlusOutlined, UnorderedListOutlined, CommentOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '@/constants/routes'
 import './Sidebar.css'
 
 function Sidebar() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { t } = useTranslation()
 
   const menuItems = [
@@ -15,6 +16,11 @@ function Sidebar() {
       key: ROUTES.ADMIN_DASHBOARD,
       icon: <AppstoreOutlined />,
       label: <NavLink to={ROUTES.ADMIN_DASHBOARD}>{t('admin.sidebar.dashboard')}</NavLink>,
+    },
+    {
+      key: ROUTES.ADMIN_ADD_ARTICLE,
+      icon: <PlusOutlined />,
+      label: <NavLink to={ROUTES.ADMIN_ADD_ARTICLE}>{t('admin.sidebar.addArticle')}</NavLink>,
     },
     {
       key: ROUTES.ADMIN_ARTICLES,
@@ -46,6 +52,16 @@ function Sidebar() {
         />
       </div>
 
+      <div className="admin-sidebar-footer">
+        <Button
+          type="primary"
+          block
+          className="admin-sidebar-add-btn"
+          onClick={() => navigate(ROUTES.ADMIN_ADD_ARTICLE)}
+        >
+          {t('admin.sidebar.addArticle')} +
+        </Button>
+      </div>
     </Flex>
   )
 }

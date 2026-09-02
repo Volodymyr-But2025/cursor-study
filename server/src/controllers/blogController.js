@@ -4,6 +4,8 @@ import Blog from '../models/Blog.js'
 import Comment from '../models/Comment.js'
 import { transformBlogImage, transformBlogsImages } from '../utils/imageUrl.js'
 import { asyncHandler } from '../helpers/asyncHandler.js'
+import generateBlogContent, { buildBlogPrompt } from '../configs/gemini.js'
+import { SUCCESS_MESSAGES, ERROR_MESSAGES, HTTP_STATUS } from '../constants/messages.js'
 
 // Helper to delete image file
 const deleteImageFile = (imagePath) => {
@@ -23,6 +25,61 @@ const deleteImageFile = (imagePath) => {
     }
   }
 }
+
+export const addBlog = asyncHandler(async (req, res) => {
+  const { title, subTitle, description, category, isPublished } = req.body
+  const image = `/uploads/blogs/${req.file.filename}`
+
+  let blog
+  try {
+    blog = await Blog.create({
+      title: title.trim(),
+      subTitle: subTitle.trim(),
+      description,
+      category,
+      image,
+      author: req.user.userId,
+      authorName: req.user.name,
+      isPublished: isPublished === true || isPublished === 'true'
+    })
+  } catch (error) {
+    deleteImageFile(image)
+    throw error
+  }
+
+  res.status(HTTP_STATUS.CREATED).json({
+    success: true,
+    message: SUCCESS_MESSAGES.BLOG_ADDED,
+    blog: transformBlogImage(blog, req)
+  })
+})
+
+export const generateBlog = asyncHandler(async (req, res) => {
+  const { title, subTitle, category } = req.body
+
+  try {
+    const prompt = buildBlogPrompt({ title, subTitle, category })
+    const content = await generateBlogContent(prompt)
+
+    if (!content) {
+      return res.status(HTTP_STATUS.SERVICE_UNAVAILABLE).json({
+        success: false,
+        message: ERROR_MESSAGES.AI_EMPTY_CONTENT
+      })
+    }
+
+    res.json({ success: true, content })
+  } catch (error) {
+    const statusCode = error.statusCode || HTTP_STATUS.SERVICE_UNAVAILABLE
+    const message = error.statusCode === HTTP_STATUS.SERVICE_UNAVAILABLE
+      ? error.message
+      : ERROR_MESSAGES.AI_GENERATION_FAILED
+
+    console.error('Gemini generation failed:', error.message)
+
+    return res.status(statusCode).json({ success: false, message })
+  }
+})
 
 export const getAllBlogs = asyncHandler(async (req, res) => {
   const blogs = await Blog.find({ isPublished: true })

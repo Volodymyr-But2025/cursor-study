@@ -1,6 +1,8 @@
 export const API_ENDPOINTS = {
   // Blog endpoints
   BLOGS_ALL: '/api/blog/all',
+  BLOG_ADD: '/api/blog/add',
+  BLOG_GENERATE: '/api/blog/generate',
   BLOG_BY_ID: (id) => `/api/blog/${id}`,
   BLOG_UPDATE: (id) => `/api/blog/${id}`,
   BLOG_DELETE: (id) => `/api/blog/${id}`,

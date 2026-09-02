@@ -1,3 +1,8 @@
+export const isEmptyHtml = (html) => {
+  if (!html) return true
+  return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim() === ''
+}
+
 export const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailRegex.test(email)

@@ -12,6 +12,14 @@ export const blogApi = {
     return await axios.get(API_ENDPOINTS.BLOG_BY_ID(id))
   },
 
+  create: async (formData) => {
+    return await axios.post(API_ENDPOINTS.BLOG_ADD, formData)
+  },
+
+  generate: async (payload) => {
+    return await axios.post(API_ENDPOINTS.BLOG_GENERATE, payload)
+  },
+
   // Update blog
   update: async (id, formData) => {
     return await axios.put(API_ENDPOINTS.BLOG_UPDATE(id), formData, {

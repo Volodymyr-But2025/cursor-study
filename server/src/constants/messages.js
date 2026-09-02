@@ -14,7 +14,12 @@ export const ERROR_MESSAGES = {
   BLOG_NOT_FOUND: 'Blog not found',
   COMMENT_NOT_FOUND: 'Comment not found',
   UNAUTHORIZED: 'Unauthorized access',
-  SERVER_ERROR: 'Internal server error'
+  SERVER_ERROR: 'Internal server error',
+  AI_NOT_CONFIGURED: 'AI generation is not configured',
+  AI_GENERATION_FAILED: 'AI generation failed. Please try again.',
+  AI_EMPTY_CONTENT: 'AI generation returned empty content',
+  INVALID_FILE_TYPE: 'Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.',
+  FILE_TOO_LARGE: 'Image must be smaller than 5MB'
 }
 
 export const HTTP_STATUS = {
@@ -24,6 +29,7 @@ export const HTTP_STATUS = {
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
-  SERVER_ERROR: 500
+  SERVER_ERROR: 500,
+  SERVICE_UNAVAILABLE: 503
 }
 
