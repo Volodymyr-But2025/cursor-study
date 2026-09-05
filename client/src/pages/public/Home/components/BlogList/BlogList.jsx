@@ -40,6 +40,7 @@ function BlogList() {
 
   return (
     <div
+      id="articles"
       className="blog-list-container"
       style={{ padding: `${token.paddingXL}px ${token.paddingXL * 2}px` }}
     >

@@ -1,33 +1,39 @@
-import React, { useState } from 'react'
-import { Input, Button, Typography, theme } from 'antd'
+import { useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Input, Button, Typography, theme, Form, Flex } from 'antd'
 import { MailOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
-import { validateEmail } from '@/utils/validators'
+import { FormField } from '@/components'
+import { createNewsletterSchema } from '@/utils/formSchemas'
 import { LAYOUT } from '@/constants/ui'
 import './NewsletterForm.css'
 
 const { Title, Paragraph } = Typography
 
 function NewsletterForm() {
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
   const { token } = theme.useToken()
   const { t } = useTranslation()
+  const schema = useMemo(() => createNewsletterSchema(t), [t])
 
-  const handleSubmit = async () => {
-    if (!validateEmail(email)) {
-      toast.error(t('messages.error.invalidEmail'))
-      return
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting }
+  } = useForm({
+    mode: 'onTouched',
+    resolver: zodResolver(schema),
+    defaultValues: {
+      email: ''
     }
+  })
 
-    setLoading(true)
-
-    setTimeout(() => {
-      toast.success(t('newsletter.successMessage'))
-      setEmail('')
-      setLoading(false)
-    }, 1000)
+  const onValid = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    toast.success(t('newsletter.successMessage'))
+    reset()
   }
 
   return (
@@ -51,38 +57,47 @@ function NewsletterForm() {
         {t('newsletter.description')}
       </Paragraph>
 
-      <div className="newsletter-form-container" style={{ maxWidth: LAYOUT.CARD_MAX_WIDTH }}>
-        <Input.Search
-          size="large"
-          placeholder={t('newsletter.placeholder')}
-          enterButton={
+      <form
+        onSubmit={handleSubmit(onValid)}
+        noValidate
+        className="newsletter-form-container"
+        style={{ maxWidth: LAYOUT.CARD_MAX_WIDTH }}
+      >
+        <Form layout="vertical" component="div">
+          <Flex gap="small" align="flex-start">
+            <div style={{ flex: 1 }}>
+              <FormField name="email" control={control} required>
+                {(field) => (
+                  <Input
+                    {...field}
+                    size="large"
+                    placeholder={t('newsletter.placeholder')}
+                    aria-label={t('newsletter.placeholder')}
+                    styles={{
+                      input: {
+                        height: token.controlHeightLG + 8,
+                        fontSize: token.fontSizeLG
+                      }
+                    }}
+                  />
+                )}
+              </FormField>
+            </div>
             <Button
               type="primary"
-              loading={loading}
+              htmlType="submit"
+              loading={isSubmitting}
               icon={<MailOutlined />}
+              size="large"
               style={{ height: token.controlHeightLG + 8 }}
             >
               {t('common.subscribe')}
             </Button>
-          }
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onSearch={handleSubmit}
-          styles={{
-            input: {
-              height: token.controlHeightLG + 8,
-              fontSize: token.fontSizeLG
-            }
-          }}
-        />
-      </div>
+          </Flex>
+        </Form>
+      </form>
     </div>
   )
 }
 
 export default NewsletterForm
-
-
-
-
-

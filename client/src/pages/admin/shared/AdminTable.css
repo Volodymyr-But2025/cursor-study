@@ -58,13 +58,17 @@
   padding: 0 var(--ant-padding);
 }
 
-/* Status tag styling */
+/* Status tag styling (legacy class names kept for safety) */
 .admin-status-tag-published {
   border: 1px solid var(--ant-color-success-border);
 }
 
 .admin-status-tag-draft {
   border: 1px solid var(--ant-color-warning-border);
+}
+
+.admin-table .ant-table-tbody > tr > td {
+  background: transparent;
 }
 
 /* Action buttons styling */

@@ -4,6 +4,7 @@ import { DeleteOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { useAdminComments, useCommentActions } from '@/hooks'
 import { SORT_OPTIONS, TABLE_SCROLL, COLUMN_WIDTHS } from '@/constants/ui'
+import { StatusBadge } from '../shared/StatusBadge'
 import '../shared/AdminTable.css'
 import './Comments.css'
 
@@ -86,6 +87,15 @@ function Comments() {
       key: 'name',
       width: COLUMN_WIDTHS.AUTHOR,
       ellipsis: true
+    },
+    {
+      title: t('admin.comments.columns.status'),
+      dataIndex: 'isApproved',
+      key: 'isApproved',
+      width: COLUMN_WIDTHS.STATUS_LARGE,
+      render: (isApproved) => (
+        <StatusBadge status={isApproved ? 'approved' : 'pending'} />
+      )
     },
     {
       title: t('admin.comments.columns.actions'),
@@ -185,6 +195,11 @@ function Comments() {
           }}
           scroll={{ x: TABLE_SCROLL.COMMENTS }}
           className="admin-table"
+          rowClassName={(record) =>
+            record.isApproved
+              ? 'admin-row-status-approved'
+              : 'admin-row-status-pending'
+          }
         />
       </div>
     </Flex>

@@ -1,0 +1,40 @@
+.admin-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 2px 10px;
+  font-weight: var(--ant-font-weight-strong);
+  border-width: 1px;
+  border-style: solid;
+  line-height: 1.4;
+}
+
+.admin-status-badge .anticon {
+  font-size: var(--ant-font-size);
+}
+
+.admin-status-badge-positive {
+  border-color: var(--ant-color-success-border);
+}
+
+.admin-status-badge-draft {
+  border-color: var(--ant-color-warning-border);
+}
+
+.admin-status-badge-pending {
+  border-color: var(--ant-color-error-border);
+}
+
+.admin-row-status-draft > td {
+  background: var(--ant-color-warning-bg) !important;
+}
+
+.admin-row-status-pending > td {
+  background: var(--ant-color-error-bg) !important;
+}
+
+.admin-row-status-published > td,
+.admin-row-status-approved > td {
+  background: var(--ant-color-success-bg) !important;
+}

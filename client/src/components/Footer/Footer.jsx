@@ -13,9 +13,18 @@ function Footer() {
   const { t } = useTranslation()
 
   const quickLinks = [
-    { label: t('footer.allArticles'), onClick: () => navigate(ROUTES.HOME) },
+    {
+      label: t('footer.allArticles'),
+      onClick: () => {
+        if (window.location.pathname === ROUTES.HOME) {
+          document.getElementById('articles')?.scrollIntoView({ behavior: 'smooth' })
+          return
+        }
+        navigate({ pathname: ROUTES.HOME, hash: 'articles' })
+      }
+    },
     { label: t('nav.login'), onClick: () => navigate(ROUTES.ADMIN) },
-    { label: t('nav.register'), onClick: () => navigate(ROUTES.ADMIN) }
+    { label: t('nav.register'), onClick: () => navigate('/register') }
   ]
 
   const socialLinks = [

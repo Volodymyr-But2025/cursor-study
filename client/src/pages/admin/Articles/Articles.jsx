@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Table, Button, Space, Typography, Spin, Flex, Segmented, Tag, Tooltip } from 'antd'
+import { Table, Button, Space, Typography, Spin, Flex, Segmented, Tooltip } from 'antd'
 import { DeleteOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { useAdminBlogs } from '@/hooks'
@@ -7,6 +7,7 @@ import moment from 'moment'
 import { blogApi } from '@/api'
 import toast from 'react-hot-toast'
 import { DATE_FORMATS, SORT_OPTIONS, TABLE_SCROLL, COLUMN_WIDTHS } from '@/constants/ui'
+import { StatusBadge } from '../shared/StatusBadge'
 import '../shared/AdminTable.css'
 import './Articles.css'
 
@@ -95,12 +96,7 @@ function Articles() {
       key: 'isPublished',
       width: COLUMN_WIDTHS.STATUS_LARGE,
       render: (isPublished) => (
-        <Tag
-          color={isPublished ? 'success' : 'warning'}
-          className={isPublished ? 'admin-status-tag-published' : 'admin-status-tag-draft'}
-        >
-          {isPublished ? t('blog.status.published') : t('blog.status.draft')}
-        </Tag>
+        <StatusBadge status={isPublished ? 'published' : 'draft'} />
       )
     },
     {
@@ -192,6 +188,11 @@ function Articles() {
           }}
           scroll={{ x: TABLE_SCROLL.ARTICLES }}
           className="admin-table"
+          rowClassName={(record) =>
+            record.isPublished
+              ? 'admin-row-status-published'
+              : 'admin-row-status-draft'
+          }
         />
       </div>
     </Flex>

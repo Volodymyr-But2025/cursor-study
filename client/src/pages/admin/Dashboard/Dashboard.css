@@ -39,6 +39,17 @@
   background: var(--ant-color-primary-bg);
   padding: var(--ant-padding);
   border-radius: var(--ant-border-radius-lg);
+  border-left: 4px solid var(--ant-color-primary);
+}
+
+.admin-stat-card-draft {
+  border-left-color: var(--ant-color-warning);
+  background: var(--ant-color-warning-bg);
+}
+
+.admin-stat-card-pending {
+  border-left-color: var(--ant-color-error);
+  background: var(--ant-color-error-bg);
 }
 
 .admin-stat-label {
@@ -51,13 +62,20 @@
   font-weight: var(--ant-font-weight-strong);
 }
 
+.admin-dashboard-tables-row {
+  flex: 1;
+  min-height: 0;
+}
+
 .admin-table-section {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 280px;
+  max-height: 420px;
   overflow: hidden;
-  background: var(--ant-color-primary-bg);
+  background: var(--ant-color-bg-container);
+  border: var(--ant-line-width) solid var(--ant-color-border-secondary);
   border-radius: var(--ant-border-radius);
 }
 
@@ -103,23 +121,15 @@
 }
 
 .admin-dashboard-table {
-  background: var(--ant-color-primary-bg);
+  background: var(--ant-color-bg-container);
 }
 
 .admin-dashboard-table .ant-table-thead > tr > th {
-  background: var(--ant-color-primary-bg-hover);
+  background: var(--ant-color-fill-alter);
   font-weight: var(--ant-font-weight-strong);
   border-radius: 0;
 }
 
 .admin-dashboard-table .ant-table-tbody > tr > td {
-  background: var(--ant-color-primary-bg);
-}
-
-.admin-status-tag-published {
-  border: 1px solid var(--ant-color-success-border);
-}
-
-.admin-status-tag-draft {
-  border: 1px solid var(--ant-color-warning-border);
+  background: transparent;
 }
