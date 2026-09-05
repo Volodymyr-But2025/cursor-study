@@ -36,3 +36,7 @@ lerna-debug.log*
 # Vite
 .vite/
 
+# Coverage
+coverage/
+public/client/
+

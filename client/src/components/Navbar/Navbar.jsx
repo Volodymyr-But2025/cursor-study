@@ -1,17 +1,41 @@
 import React from 'react'
 import { Button, theme } from 'antd'
 import { HomeOutlined } from '@ant-design/icons'
+import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAppContext } from '@/context/AppContext'
+import { useAppContext } from '@/context'
 import { ROUTES } from '@/constants/routes'
 import { IMAGE } from '@/constants/ui'
+import { scrollToTop } from '@/utils/helpers'
 import { assets } from '@/assets/assets'
 import './Navbar.css'
 
+const ARTICLES_HASH = 'articles'
+
 function Navbar() {
   const { navigate, token: authToken } = useAppContext()
+  const location = useLocation()
   const { token } = theme.useToken()
   const { t } = useTranslation()
+
+  const goHome = () => {
+    if (location.pathname === ROUTES.HOME) {
+      if (location.hash) {
+        navigate(ROUTES.HOME, { replace: true })
+      }
+      scrollToTop()
+      return
+    }
+    navigate(ROUTES.HOME)
+  }
+
+  const goArticles = () => {
+    if (location.pathname === ROUTES.HOME) {
+      document.getElementById(ARTICLES_HASH)?.scrollIntoView({ behavior: 'smooth' })
+      return
+    }
+    navigate({ pathname: ROUTES.HOME, hash: ARTICLES_HASH })
+  }
 
   return (
     <nav
@@ -23,7 +47,7 @@ function Navbar() {
       }}
     >
       <div
-        onClick={() => navigate(ROUTES.HOME)}
+        onClick={goHome}
         className="navbar-logo"
         style={{
           gap: token.marginXS,
@@ -50,21 +74,21 @@ function Navbar() {
         <Button
           type="text"
           icon={<HomeOutlined />}
-          onClick={() => navigate(ROUTES.HOME)}
+          onClick={goHome}
           style={{ fontSize: token.fontSizeLG, height: token.controlHeightLG }}
         >
           {t('nav.home')}
         </Button>
         <Button
           type="text"
-          onClick={() => navigate(ROUTES.HOME)}
+          onClick={goArticles}
           style={{ fontSize: token.fontSizeLG, height: token.controlHeightLG }}
         >
           {t('nav.articles')}
         </Button>
         <Button
           type="primary"
-          onClick={() => navigate(authToken ? ROUTES.ADMIN : ROUTES.ADMIN)}
+          onClick={() => navigate(ROUTES.ADMIN)}
           style={{
             borderRadius: token.borderRadius,
             height: token.controlHeightLG,
@@ -76,7 +100,7 @@ function Navbar() {
         </Button>
         {!authToken && (
           <Button
-            onClick={() => navigate(ROUTES.ADMIN)}
+            onClick={() => navigate('/register')}
             style={{
               borderRadius: token.borderRadius,
               height: token.controlHeightLG,
@@ -95,8 +119,3 @@ function Navbar() {
 }
 
 export default Navbar
-
-
-
-
-

@@ -1,45 +1,17 @@
-import React from 'react'
-import { Form, Input, Button, Layout, Typography, Space, Flex } from 'antd'
-import { MailOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
+import { Layout, Typography, Space, Flex } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { useAppContext } from '@/context/AppContext'
+import { useAppContext } from '@/context'
 import { ROUTES } from '@/constants/routes'
-import { adminApi } from '@/api'
-import toast from 'react-hot-toast'
 import { assets } from '@/assets/assets'
+import { LoginForm } from './components'
 import './Login.css'
 
 const { Header, Footer, Content } = Layout
 const { Title, Text, Link } = Typography
 
 function Login() {
-  const { setToken, navigate } = useAppContext()
-  const [loading, setLoading] = React.useState(false)
+  const { navigate } = useAppContext()
   const { t } = useTranslation()
-
-  const handleSubmit = async (values) => {
-    setLoading(true)
-
-    try {
-      const response = await adminApi.login({
-        email: values.email,
-        password: values.password
-      })
-
-      if (response.data.success) {
-        setToken(response.data.token)
-        localStorage.setItem('token', response.data.token)
-        toast.success(t('messages.success.login'))
-        navigate(ROUTES.ADMIN)
-      } else {
-        toast.error(response.data.message || t('messages.error.login'))
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || error.message || t('messages.error.login'))
-    } finally {
-      setLoading(false)
-    }
-  }
 
   return (
     <Layout className="auth-layout">
@@ -67,60 +39,7 @@ function Login() {
             {t('auth.login.title')}
           </Title>
 
-          <Form layout="vertical" onFinish={handleSubmit}>
-            <Form.Item
-              label={<Text>{t('auth.login.emailLabel')}</Text>}
-              name="email"
-              rules={[
-                { required: true, message: t('validation.emailRequired') },
-                { type: 'email', message: t('validation.emailInvalid') }
-              ]}
-              className="auth-form-item"
-            >
-              <Input
-                placeholder={t('auth.login.emailPlaceholder')}
-                suffix={<MailOutlined className="auth-input-icon" />}
-                size="large"
-              />
-            </Form.Item>
-
-            <Form.Item
-              label={<Text>{t('auth.login.passwordLabel')}</Text>}
-              name="password"
-              rules={[{ required: true, message: t('validation.passwordRequired') }]}
-              className="auth-form-item-small"
-            >
-              <Input.Password
-                placeholder={t('auth.login.passwordPlaceholder')}
-                iconRender={visible => visible ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                size="large"
-              />
-            </Form.Item>
-
-            <Flex justify="flex-end" className="auth-forgot-password">
-              <Text className="auth-forgot-password-text">
-                {t('auth.login.forgotPassword')}{' '}
-                <Link
-                  onClick={() => navigate('/reset-password')}
-                  className="auth-link-warning"
-                >
-                  {t('auth.login.reset')}
-                </Link>
-              </Text>
-            </Flex>
-
-            <Form.Item className="auth-form-item-small">
-              <Button
-                type="primary"
-                htmlType="submit"
-                block
-                loading={loading}
-                size="large"
-              >
-                {t('auth.login.submitButton')}
-              </Button>
-            </Form.Item>
-          </Form>
+          <LoginForm />
 
           <Flex justify="center">
             <Text>

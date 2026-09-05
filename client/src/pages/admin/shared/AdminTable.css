@@ -1,20 +1,23 @@
 /* Shared Admin Table Styles */
 
-/* Table section - full height */
+/* Table section grows with content; page scrolls instead of clipping rows */
 .admin-table-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
+  flex: 0 0 auto;
+  width: 100%;
   background: var(--ant-color-primary-bg);
   border-radius: var(--ant-border-radius-lg);
 }
 
 /* Table styling */
 .admin-table {
-  flex: 1;
   background: var(--ant-color-primary-bg);
+}
+
+.admin-table .ant-spin-nested-loading,
+.admin-table .ant-spin-container {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible;
 }
 
 .admin-table .ant-table {
@@ -58,13 +61,17 @@
   padding: 0 var(--ant-padding);
 }
 
-/* Status tag styling */
+/* Status tag styling (legacy class names kept for safety) */
 .admin-status-tag-published {
   border: 1px solid var(--ant-color-success-border);
 }
 
 .admin-status-tag-draft {
   border: 1px solid var(--ant-color-warning-border);
+}
+
+.admin-table .ant-table-tbody > tr > td {
+  background: transparent;
 }
 
 /* Action buttons styling */
@@ -121,4 +128,3 @@
 .admin-page-header .ant-segmented-thumb {
   background: var(--ant-color-primary);
 }
-

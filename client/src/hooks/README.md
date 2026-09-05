@@ -132,21 +132,20 @@ const deleteItem = async (id) => {
 ## 🛠️ Utility Hooks
 
 ### `useForm`
-Comprehensive form state management with validation.
+Re-export of [React Hook Form](https://react-hook-form.com/docs/useform). Pair with Zod via `zodResolver` and shared schemas in `utils/formSchemas.js`. Prefer importing from `react-hook-form` in form components.
 
 **Usage:**
 ```javascript
-const {
-  values,
-  errors,
-  touched,
-  isSubmitting,
-  handleChange,
-  handleBlur,
-  setFieldValue,
-  resetForm,
-  handleSubmit
-} = useForm({ name: '', email: '' })
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { createLoginSchema } from '@/utils/formSchemas'
+
+const schema = useMemo(() => createLoginSchema(t), [t])
+const { control, handleSubmit, formState: { isSubmitting } } = useForm({
+  mode: 'onTouched',
+  resolver: zodResolver(schema),
+  defaultValues: { email: '', password: '' }
+})
 ```
 
 ### `useDebounce`
@@ -238,7 +237,7 @@ export function useProducts() {
 ```javascript
 // api/mutations/useProductActions.js
 import { useApiMutation } from '../../core'
-import { useAppContext } from '../../../context/AppContext'
+import { useAppContext } from '../../../context'
 
 export function useProductActions() {
   const { axios } = useAppContext()

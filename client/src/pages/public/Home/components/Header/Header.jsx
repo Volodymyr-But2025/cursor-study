@@ -2,7 +2,7 @@ import React from 'react'
 import { Input, Button, Tag, theme } from 'antd'
 import { SearchOutlined, StarFilled } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
-import { useAppContext } from '@/context/AppContext'
+import { useAppContext } from '@/context'
 import { LAYOUT } from '@/constants/ui'
 import './Header.css'
 

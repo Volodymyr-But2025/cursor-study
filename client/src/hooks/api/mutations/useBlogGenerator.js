@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { parse } from 'marked'
-import { useAppContext } from '../../../context/AppContext'
+import { useAppContext } from '../../../context'
 import { useApiMutation } from '../../core'
 import toast from 'react-hot-toast'
 import { MESSAGES } from '../../../constants/messages'

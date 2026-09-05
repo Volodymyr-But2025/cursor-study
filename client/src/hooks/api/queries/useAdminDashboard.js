@@ -1,4 +1,4 @@
-import { useAppContext } from '../../../context/AppContext'
+import { useAppContext } from '../../../context'
 import { useApiQuery } from '../../core'
 import { MESSAGES } from '../../../constants/messages'
 
@@ -6,6 +6,7 @@ const defaultDashboard = {
   blogs: 0,
   comments: 0,
   drafts: 0,
+  pendingComments: 0,
   recentBlogs: [],
   recentComments: []
 }

@@ -1,4 +1,5 @@
 import Moment from 'moment'
+import { toHtml } from './sanitizeHtml'
 
 export const formatDate = (date) => {
   return Moment(date).format('MMMM Do YYYY')
@@ -15,11 +16,12 @@ export const truncateText = (text, length = 80) => {
 
 export const stripHtmlTags = (html) => {
   if (!html) return ''
-  return html.replace(/<[^>]*>/g, '')
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+  return doc.body.textContent || ''
 }
 
 export const truncateHtml = (html, length = 80) => {
-  const stripped = stripHtmlTags(html)
+  const stripped = stripHtmlTags(toHtml(html))
   return truncateText(stripped, length)
 }
 

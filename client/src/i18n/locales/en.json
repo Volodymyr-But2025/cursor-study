@@ -80,7 +80,10 @@
       "title": "Dashboard",
       "articles": "Articles",
       "drafts": "Drafts",
-      "latestArticles": "Latest Articles"
+      "comments": "Comments",
+      "pendingComments": "Pending comments",
+      "latestArticles": "Latest Articles",
+      "latestComments": "Latest Comments"
     },
     "addBlog": {
       "title": "Add Article",
@@ -119,11 +122,16 @@
       "sortByArticle": "By Article",
       "totalComments": "Total {{count}} comments",
       "unknownArticle": "Unknown article",
+      "status": {
+        "approved": "Approved",
+        "pending": "Pending"
+      },
       "columns": {
         "index": "#",
         "comment": "Comment",
         "article": "Article",
         "author": "Author",
+        "status": "Status",
         "actions": "Actions"
       }
     }
@@ -165,10 +173,16 @@
     "passwordMismatch": "Passwords do not match",
     "nameRequired": "Please enter your name",
     "nameMin": "Name must be at least 2 characters",
+    "nameMax": "Name must be at most 50 characters",
     "commentRequired": "Please enter your comment",
+    "commentMax": "Comment must be at most 1000 characters",
     "titleRequired": "Please enter article title",
+    "titleMin": "Title must be at least 3 characters",
     "subtitleRequired": "Please enter subtitle",
-    "categoryRequired": "Please select a category"
+    "categoryRequired": "Please select a category",
+    "descriptionRequired": "Please add blog description",
+    "descriptionMin": "Description must be at least 10 characters",
+    "thumbnailRequired": "Please upload a thumbnail image"
   },
   "messages": {
     "success": {

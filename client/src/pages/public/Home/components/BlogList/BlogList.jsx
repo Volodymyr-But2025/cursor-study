@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { Tabs, Card, Row, Col, Tag, Empty, theme } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAppContext } from '@/context/AppContext'
+import { useAppContext } from '@/context'
 import { BLOG_CATEGORIES } from '@/constants/categories'
 import { truncateHtml } from '@/utils/formatters'
 import { getBlogDetailPath } from '@/constants/routes'
@@ -40,6 +40,7 @@ function BlogList() {
 
   return (
     <div
+      id="articles"
       className="blog-list-container"
       style={{ padding: `${token.paddingXL}px ${token.paddingXL * 2}px` }}
     >

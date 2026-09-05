@@ -4,7 +4,7 @@ import { Menu, Flex, Button } from 'antd'
 import { AppstoreOutlined, PlusOutlined, UnorderedListOutlined, MessageOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '@/constants/routes'
-import { useAppContext } from '@/context/AppContext'
+import { useAppContext } from '@/context'
 import './Sidebar.css'
 
 function Sidebar() {

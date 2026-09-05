@@ -1,4 +1,4 @@
-export { default } from './BlogContent'
+export { default } from './BlogContent.tsx'
 
 
 
