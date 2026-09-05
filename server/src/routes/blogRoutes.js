@@ -8,15 +8,19 @@ import {
   publishBlog,
   unpublishBlog 
 } from '../controllers/blogController.js'
+import { addComment, getBlogComments } from '../controllers/commentController.js'
 import upload from '../middleware/multer.js'
 import auth from '../middleware/auth.js'
-import { generateLimiter } from '../middleware/rateLimiter.js'
+import { generateLimiter, commentLimiter } from '../middleware/rateLimiter.js'
 import { validateBlogInput } from '../validators/blogValidator.js'
+import { validateAddComment, validateBlogId } from '../validators/commentValidator.js'
 
 const blogRouter = express.Router()
 
 // Public routes
 blogRouter.get('/all', getAllBlogs)
+blogRouter.post('/add-comment', commentLimiter, validateAddComment, addComment)
+blogRouter.post('/comments', validateBlogId, getBlogComments)
 blogRouter.get('/:blogId', getBlogById)
 
 // Apply auth middleware to all routes below this point

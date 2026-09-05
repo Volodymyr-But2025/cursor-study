@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import toast from 'react-hot-toast'
 
 // Hook for data fetching (GET requests) with auto-fetch on mount
@@ -15,6 +15,7 @@ export function useApiQuery(apiCall, options = {}) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(enabled)
   const [error, setError] = useState(null)
+  const hasLoadedRef = useRef(false)
 
   const fetchData = useCallback(async () => {
     if (!apiCall) {
@@ -23,13 +24,16 @@ export function useApiQuery(apiCall, options = {}) {
     }
 
     try {
-      setLoading(true)
+      if (!hasLoadedRef.current) {
+        setLoading(true)
+      }
       setError(null)
       
       const response = await apiCall()
       
       if (response.data.success) {
         setData(response.data)
+        hasLoadedRef.current = true
         
         if (onSuccess) {
           onSuccess(response.data)
@@ -71,6 +75,7 @@ export function useApiQuery(apiCall, options = {}) {
 
   return {
     data,
+    setData,
     loading,
     error,
     refetch: fetchData

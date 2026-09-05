@@ -2,12 +2,15 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { Flex, theme } from 'antd'
 import { Navbar, Footer, Loader } from '@/components'
-import { useBlog } from '@/hooks'
-import { BlogHeader, BlogContent } from './components'
+import { useBlog, useComments } from '@/hooks'
+import { LAYOUT } from '@/constants/ui'
+import { BlogHeader, BlogContent, CommentForm, CommentList } from './components'
+import './BlogDetail.css'
 
 function BlogDetail() {
   const { id } = useParams()
   const { blog, loading: blogLoading } = useBlog(id)
+  const { comments, loading: commentsLoading, refetch: refetchComments } = useComments(id)
   const { token } = theme.useToken()
 
   if (blogLoading || !blog) {
@@ -36,6 +39,16 @@ function BlogDetail() {
           <BlogHeader blog={blog} />
 
           <BlogContent content={blog.description} />
+
+          <Flex
+            vertical
+            gap={token.marginXL}
+            className="blog-comments"
+            style={{ maxWidth: LAYOUT.COMMENTS_MAX_WIDTH }}
+          >
+            <CommentForm blogId={blog._id} onSubmitted={refetchComments} />
+            <CommentList comments={comments} loading={commentsLoading} />
+          </Flex>
         </Flex>
       </Flex>
 
@@ -45,4 +58,3 @@ function BlogDetail() {
 }
 
 export default BlogDetail
-

@@ -1,17 +1,25 @@
+/* @refresh reload */
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { axios, blogApi } from '../api'
 import toast from 'react-hot-toast'
 import { MESSAGES } from '../constants/messages'
+import { getUserFromToken } from '../utils/helpers'
 
 const AppContext = createContext()
 
 export const AppProvider = ({ children }) => {
   const navigate = useNavigate()
 
-  const [token, setToken] = useState(null)
+  const [token, setTokenState] = useState(() => localStorage.getItem('token'))
+  const [user, setUser] = useState(() => getUserFromToken(localStorage.getItem('token')))
   const [blogs, setBlogs] = useState([])
   const [input, setInput] = useState('')
+
+  const setToken = (newToken) => {
+    setTokenState(newToken)
+    setUser(newToken ? getUserFromToken(newToken) : null)
+  }
 
   const fetchBlogs = async () => {
     try {
@@ -28,11 +36,6 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     fetchBlogs()
-    
-    const storedToken = localStorage.getItem('token')
-    if (storedToken) {
-      setToken(storedToken)
-    }
   }, [])
 
   const value = {
@@ -40,6 +43,7 @@ export const AppProvider = ({ children }) => {
     navigate,
     token,
     setToken,
+    user,
     blogs,
     setBlogs,
     input,

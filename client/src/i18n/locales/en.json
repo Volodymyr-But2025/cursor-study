@@ -11,6 +11,8 @@
     "save": "Save",
     "publish": "Publish",
     "unpublish": "Unpublish",
+    "approve": "Approve",
+    "disapprove": "Disapprove",
     "subscribe": "Subscribe",
     "clearSearch": "Clear Search"
   },
@@ -57,13 +59,22 @@
   },
   "blogDetail": {
     "shareTitle": "Share this article on social media",
-    "coverAlt": "Article cover"
+    "coverAlt": "Article cover",
+    "comments": {
+      "title": "Comments",
+      "leaveComment": "Leave a comment",
+      "namePlaceholder": "Your name",
+      "commentPlaceholder": "Your comment",
+      "submit": "Submit",
+      "empty": "No comments yet"
+    }
   },
   "admin": {
     "sidebar": {
       "dashboard": "Dashboard",
       "addArticle": "Add Article",
-      "allArticles": "All Articles"
+      "allArticles": "All Articles",
+      "comments": "Comments"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -97,6 +108,22 @@
         "blogTitle": "Blog Title",
         "date": "Date",
         "status": "Status",
+        "actions": "Actions"
+      }
+    },
+    "comments": {
+      "title": "Comments",
+      "commentsCount": "Comments:",
+      "sorting": "Sorting:",
+      "sortLatest": "Latest",
+      "sortByArticle": "By Article",
+      "totalComments": "Total {{count}} comments",
+      "unknownArticle": "Unknown article",
+      "columns": {
+        "index": "#",
+        "comment": "Comment",
+        "article": "Article",
+        "author": "Author",
         "actions": "Actions"
       }
     }
@@ -137,6 +164,8 @@
     "confirmPasswordRequired": "Please confirm your password",
     "passwordMismatch": "Passwords do not match",
     "nameRequired": "Please enter your name",
+    "nameMin": "Name must be at least 2 characters",
+    "commentRequired": "Please enter your comment",
     "titleRequired": "Please enter article title",
     "subtitleRequired": "Please enter subtitle",
     "categoryRequired": "Please select a category"
@@ -147,6 +176,10 @@
       "blogDeleted": "Blog deleted successfully!",
       "blogPublished": "Blog published successfully",
       "blogUnpublished": "Blog unpublished successfully",
+      "commentAdded": "Comment added for review",
+      "commentApproved": "Comment approved successfully",
+      "commentDisapproved": "Comment disapproved successfully",
+      "commentDeleted": "Comment deleted successfully",
       "login": "Login successful!",
       "logout": "Logout successful!"
     },

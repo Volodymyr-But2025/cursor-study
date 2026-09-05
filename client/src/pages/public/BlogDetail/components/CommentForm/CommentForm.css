@@ -1,0 +1,23 @@
+.comment-form {
+  width: 100%;
+}
+
+.comment-form-title {
+  margin: 0 0 var(--ant-margin-lg);
+  text-align: center;
+  color: var(--ant-color-text);
+}
+
+.comment-form-subtitle {
+  display: block;
+  margin-bottom: var(--ant-margin-sm);
+  color: var(--ant-color-text);
+}
+
+.comment-form-fields {
+  width: 100%;
+}
+
+.comment-form-fields .ant-form-item:last-child {
+  margin-bottom: 0;
+}
