@@ -1,8 +1,25 @@
-.comment-list-container {
-  margin: 0 auto;
+.comment-list {
+  width: 100%;
 }
 
+.comment-list-loading {
+  min-height: 120px;
+}
 
+.comment-list-empty {
+  margin: var(--ant-margin-lg) 0;
+}
 
+.comment-list-item {
+  width: 100%;
+}
 
+.comment-list-divider {
+  margin: var(--ant-margin) 0;
+}
 
+.comment-list-content {
+  margin-bottom: 0;
+  color: var(--ant-color-text);
+  white-space: pre-wrap;
+}

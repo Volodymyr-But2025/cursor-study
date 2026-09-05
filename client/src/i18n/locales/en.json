@@ -11,6 +11,8 @@
     "save": "Save",
     "publish": "Publish",
     "unpublish": "Unpublish",
+    "approve": "Approve",
+    "disapprove": "Disapprove",
     "subscribe": "Subscribe",
     "clearSearch": "Clear Search"
   },
@@ -50,7 +52,6 @@
     "readMore": "Read More",
     "publishedOn": "Published on",
     "by": "By",
-    "comments": "Comments",
     "status": {
       "published": "Published",
       "draft": "Draft"
@@ -58,19 +59,15 @@
   },
   "blogDetail": {
     "shareTitle": "Share this article on social media",
-    "coverAlt": "Article cover"
-  },
-  "comment": {
-    "title": "Leave a comment",
-    "description": "Want to share your thoughts or leave a comment? We'd love to hear from you!",
-    "namePlaceholder": "Your name",
-    "contentPlaceholder": "Your comment",
-    "submitButton": "Submit Comment",
-    "noComments": "No comments yet. Be the first!",
-    "alreadyApproved": "Already approved",
-    "approve": "Approve comment",
-    "unapprove": "Unapprove comment",
-    "deleteComment": "Delete comment"
+    "coverAlt": "Article cover",
+    "comments": {
+      "title": "Comments",
+      "leaveComment": "Leave a comment",
+      "namePlaceholder": "Your name",
+      "commentPlaceholder": "Your comment",
+      "submit": "Submit",
+      "empty": "No comments yet"
+    }
   },
   "admin": {
     "sidebar": {
@@ -82,10 +79,8 @@
     "dashboard": {
       "title": "Dashboard",
       "articles": "Articles",
-      "comments": "Comments",
       "drafts": "Drafts",
-      "latestArticles": "Latest Articles",
-      "latestComments": "Latest Comments"
+      "latestArticles": "Latest Articles"
     },
     "addBlog": {
       "title": "Add Article",
@@ -113,15 +108,17 @@
         "blogTitle": "Blog Title",
         "date": "Date",
         "status": "Status",
-        "actions": "Actions",
-        "comments": "Comments"
+        "actions": "Actions"
       }
     },
     "comments": {
       "title": "Comments",
       "commentsCount": "Comments:",
+      "sorting": "Sorting:",
+      "sortLatest": "Latest",
       "sortByArticle": "By Article",
       "totalComments": "Total {{count}} comments",
+      "unknownArticle": "Unknown article",
       "columns": {
         "index": "#",
         "comment": "Comment",
@@ -167,6 +164,7 @@
     "confirmPasswordRequired": "Please confirm your password",
     "passwordMismatch": "Passwords do not match",
     "nameRequired": "Please enter your name",
+    "nameMin": "Name must be at least 2 characters",
     "commentRequired": "Please enter your comment",
     "titleRequired": "Please enter article title",
     "subtitleRequired": "Please enter subtitle",
@@ -178,10 +176,10 @@
       "blogDeleted": "Blog deleted successfully!",
       "blogPublished": "Blog published successfully",
       "blogUnpublished": "Blog unpublished successfully",
-      "commentAdded": "Comment added successfully!",
-      "commentDeleted": "Comment deleted successfully!",
-      "commentApproved": "Comment approved successfully!",
-      "commentUnapproved": "Comment unapproved successfully!",
+      "commentAdded": "Comment added for review",
+      "commentApproved": "Comment approved successfully",
+      "commentDisapproved": "Comment disapproved successfully",
+      "commentDeleted": "Comment deleted successfully",
       "login": "Login successful!",
       "logout": "Logout successful!"
     },

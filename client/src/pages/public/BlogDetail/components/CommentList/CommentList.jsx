@@ -1,76 +1,52 @@
 import React from 'react'
-import { Avatar, Typography, Space, Empty, Flex, theme } from 'antd'
-import { UserOutlined } from '@ant-design/icons'
+import { Flex, Typography, Spin, Empty, Divider } from 'antd'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { DATE_FORMATS } from '@/constants/ui'
 import './CommentList.css'
 
-const { Text } = Typography
+const { Text, Paragraph } = Typography
 
-function CommentList({ comments }) {
-  const { token } = theme.useToken()
+function CommentList({ comments, loading }) {
   const { t } = useTranslation()
 
-  if (comments.length === 0) {
-    return <Empty description={t('comment.noComments')} />
+  if (loading) {
+    return (
+      <Flex justify="center" align="center" className="comment-list-loading">
+        <Spin size="large" />
+      </Flex>
+    )
+  }
+
+  if (!comments.length) {
+    return (
+      <Empty
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+        description={t('blogDetail.comments.empty')}
+        className="comment-list-empty"
+      />
+    )
   }
 
   return (
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          {comments.map((comment) => (
-        <Flex
-              key={comment._id}
-          gap={token.marginMD}
-          align="flex-start"
-              style={{
-                background: token.colorPrimaryBg,
-                borderRadius: 16,
-                padding: token.padding
-              }}
-            >
-                <Avatar
-                  size={32}
-                  icon={<UserOutlined />}
-                  style={{ 
-                    background: token.colorTextPlaceholder,
-                    flexShrink: 0
-                  }}
-                />
-                <Flex vertical style={{ flex: 1, minWidth: 0 }}>
-                  <Flex justify="space-between" align="center">
-              <Text
-                strong
-                style={{
-                  fontSize: token.fontSize,
-                  color: token.colorTextBase
-                }}
-              >
-                      {comment.name}
-                    </Text>
-              <Text
-                strong
-                style={{
-                  fontSize: token.fontSize,
-                  color: token.colorTextBase
-                }}
-              >
-                      {moment(comment.createdAt).format(DATE_FORMATS.DISPLAY)}
-                    </Text>
-                  </Flex>
-            <Text
-              style={{
-                fontSize: token.fontSizeLG,
-                marginTop: token.marginXS,
-                color: token.colorTextBase
-              }}
-            >
-                    {comment.content}
-                  </Text>
-                </Flex>
-              </Flex>
-          ))}
-        </Space>
+    <Flex vertical className="comment-list">
+      {comments.map((comment, index) => (
+        <div key={comment._id} className="comment-list-item">
+          {index > 0 && <Divider className="comment-list-divider" />}
+          <Flex vertical gap="small">
+            <Flex align="center" gap="middle" wrap="wrap">
+              <Text strong>{comment.name}</Text>
+              <Text type="secondary">
+                {moment(comment.createdAt).format(DATE_FORMATS.DISPLAY)}
+              </Text>
+            </Flex>
+            <Paragraph className="comment-list-content">
+              {comment.content}
+            </Paragraph>
+          </Flex>
+        </div>
+      ))}
+    </Flex>
   )
 }
 

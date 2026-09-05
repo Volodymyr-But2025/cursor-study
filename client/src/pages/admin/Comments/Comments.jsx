@@ -1,10 +1,8 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import { Table, Button, Space, Typography, Spin, Flex, Segmented, Tooltip } from 'antd'
-import { DeleteOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
+import { DeleteOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
-import { useAdminComments } from '@/hooks'
-import { commentApi } from '@/api'
-import toast from 'react-hot-toast'
+import { useAdminComments, useCommentActions } from '@/hooks'
 import { SORT_OPTIONS, TABLE_SCROLL, COLUMN_WIDTHS } from '@/constants/ui'
 import '../shared/AdminTable.css'
 import './Comments.css'
@@ -12,59 +10,54 @@ import './Comments.css'
 const { Title, Text } = Typography
 
 function Comments() {
-  const { comments, loading, refetch } = useAdminComments()
+  const { comments, loading, updateComment, removeComment } = useAdminComments()
+  const { approveComment, disapproveComment, deleteComment, inProgress } = useCommentActions()
   const { t } = useTranslation()
   const [sortBy, setSortBy] = useState(SORT_OPTIONS.COMMENTS[0])
-
-  const handleDelete = async (id) => {
-    try {
-      const response = await commentApi.delete(id)
-      if (response.data.success) {
-        toast.success(t('messages.success.commentDeleted'))
-        refetch()
-      } else {
-        toast.error(response.data.message || t('messages.error.generic'))
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || error.message || t('messages.error.generic'))
-    }
-  }
+  const [pendingId, setPendingId] = useState(null)
 
   const handleApprove = async (id) => {
-    try {
-      const response = await commentApi.approve(id)
-      if (response.data.success) {
-        toast.success(t('messages.success.commentApproved'))
-        refetch()
-      } else {
-        toast.error(response.data.message || t('messages.error.generic'))
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || error.message || t('messages.error.generic'))
+    setPendingId(id)
+    const result = await approveComment(id)
+    if (result?.success) {
+      updateComment(id, { isApproved: true })
     }
+    setPendingId(null)
   }
 
-  const handleUnapprove = async (id) => {
-    try {
-      const response = await commentApi.unapprove(id)
-      if (response.data.success) {
-        toast.success(t('messages.success.commentUnapproved'))
-        refetch()
-      } else {
-        toast.error(response.data.message || t('messages.error.generic'))
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || error.message || t('messages.error.generic'))
+  const handleDisapprove = async (id) => {
+    setPendingId(id)
+    const result = await disapproveComment(id)
+    if (result?.success) {
+      updateComment(id, { isApproved: false })
     }
+    setPendingId(null)
   }
 
-  const sortedComments = useMemo(() => {
-    let sorted = [...comments]
-    if (sortBy === t('admin.listBlog.sortLatest') || sortBy === 'Latest') {
-      sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  const handleDelete = async (id) => {
+    setPendingId(id)
+    const result = await deleteComment(id)
+    if (result?.success) {
+      removeComment(id)
     }
-    return sorted
-  }, [comments, sortBy, t])
+    setPendingId(null)
+  }
+
+  const sortedComments = [...comments].sort((a, b) => {
+    if (sortBy === t('admin.comments.sortLatest') || sortBy === 'Latest') {
+      return new Date(b.createdAt) - new Date(a.createdAt)
+    }
+
+    if (sortBy === t('admin.comments.sortByArticle') || sortBy === 'By Article') {
+      const titleA = a.blog?.title || ''
+      const titleB = b.blog?.title || ''
+      const byTitle = titleA.localeCompare(titleB)
+      if (byTitle !== 0) return byTitle
+      return new Date(b.createdAt) - new Date(a.createdAt)
+    }
+
+    return 0
+  })
 
   const columns = [
     {
@@ -78,22 +71,21 @@ function Comments() {
       title: t('admin.comments.columns.comment'),
       dataIndex: 'content',
       key: 'content',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: t('admin.comments.columns.article'),
-      dataIndex: ['blog', 'title'],
       key: 'article',
-      ellipsis: true,
       width: COLUMN_WIDTHS.ARTICLE,
-      responsive: ['md']
+      ellipsis: true,
+      render: (_, record) => record.blog?.title || t('admin.comments.unknownArticle')
     },
     {
       title: t('admin.comments.columns.author'),
       dataIndex: 'name',
-      key: 'author',
+      key: 'name',
       width: COLUMN_WIDTHS.AUTHOR,
-      responsive: ['lg']
+      ellipsis: true
     },
     {
       title: t('admin.comments.columns.actions'),
@@ -103,36 +95,45 @@ function Comments() {
       render: (_, record) => (
         <Space size="small">
           {!record.isApproved ? (
-            <Tooltip title={t('comment.approve')}>
+            <Tooltip title={t('common.approve')}>
               <Button
                 type="default"
                 shape="circle"
                 size="small"
-                icon={<CheckOutlined className="admin-action-icon" />}
+                icon={<PlusOutlined className="admin-action-icon" />}
                 className="admin-action-btn-approve"
                 onClick={() => handleApprove(record._id)}
+                disabled={inProgress}
+                loading={pendingId === record._id}
+                aria-label={t('common.approve')}
               />
             </Tooltip>
           ) : (
-            <Tooltip title={t('comment.unapprove')}>
+            <Tooltip title={t('common.disapprove')}>
               <Button
                 type="default"
                 shape="circle"
                 size="small"
                 icon={<CloseOutlined className="admin-action-icon" />}
                 className="admin-action-btn-unapprove"
-                onClick={() => handleUnapprove(record._id)}
+                onClick={() => handleDisapprove(record._id)}
+                disabled={inProgress}
+                loading={pendingId === record._id}
+                aria-label={t('common.disapprove')}
               />
             </Tooltip>
           )}
-          <Tooltip title={t('comment.deleteComment')}>
+          <Tooltip title={t('common.delete')}>
             <Button
               type="default"
               shape="circle"
               size="small"
               icon={<DeleteOutlined className="admin-action-icon" />}
               className="admin-action-btn-delete"
-              onClick={() => handleDelete(record._id)}
+                onClick={() => handleDelete(record._id)}
+                disabled={inProgress}
+                loading={pendingId === record._id}
+              aria-label={t('common.delete')}
             />
           </Tooltip>
         </Space>
@@ -161,7 +162,7 @@ function Comments() {
           </Text>
 
           <Flex align="center" gap="small">
-            <Text>{t('admin.listBlog.sorting')}</Text>
+            <Text>{t('admin.comments.sorting')}</Text>
             <Segmented
               options={SORT_OPTIONS.COMMENTS}
               value={sortBy}

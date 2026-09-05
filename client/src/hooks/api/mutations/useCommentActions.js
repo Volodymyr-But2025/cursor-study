@@ -1,52 +1,45 @@
-import { useState } from 'react'
-import { useAppContext } from '../../../context/AppContext'
+import { adminApi } from '../../../api'
 import { useApiMutation } from '../../core'
 import { MESSAGES } from '../../../constants/messages'
 
 export function useCommentActions() {
-  const [isApproving, setIsApproving] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-  const { axios } = useAppContext()
-  const { mutate, error } = useApiMutation()
+  const { mutate, loading, error } = useApiMutation()
 
-  const approveComment = async (commentId) => {
-    setIsApproving(true)
-    
-    const result = await mutate(
-      () => axios.post('/api/admin/approve-comment', { id: commentId }),
+  const approveComment = async (id) => {
+    return mutate(
+      () => adminApi.approveComment(id),
       {
         successMessage: MESSAGES.SUCCESS_COMMENT_APPROVED,
-        errorMessage: MESSAGES.ERROR_GENERIC
+        errorMessage: MESSAGES.ERROR_UPDATE_COMMENT
       }
     )
-    
-    setIsApproving(false)
-    return result
   }
 
-  const deleteComment = async (commentId) => {
-    setIsDeleting(true)
-    
-    const result = await mutate(
-      () => axios.post('/api/admin/delete-comment', { id: commentId }),
+  const disapproveComment = async (id) => {
+    return mutate(
+      () => adminApi.disapproveComment(id),
       {
-        confirmMessage: 'Are you sure you want to delete this comment?',
+        successMessage: MESSAGES.SUCCESS_COMMENT_DISAPPROVED,
+        errorMessage: MESSAGES.ERROR_UPDATE_COMMENT
+      }
+    )
+  }
+
+  const deleteComment = async (id) => {
+    return mutate(
+      () => adminApi.deleteComment(id),
+      {
         successMessage: MESSAGES.SUCCESS_COMMENT_DELETED,
         errorMessage: MESSAGES.ERROR_DELETE_COMMENT
       }
     )
-    
-    setIsDeleting(false)
-    return result
   }
 
   return {
     approveComment,
+    disapproveComment,
     deleteComment,
-    isApproving,
-    isDeleting,
-    inProgress: isApproving || isDeleting,
+    inProgress: loading,
     error
   }
 }
-

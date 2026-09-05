@@ -54,3 +54,35 @@ export const removeFromLocalStorage = (key) => {
   }
 }
 
+export const decodeJwtPayload = (token) => {
+  if (!token || typeof token !== 'string') return null
+
+  try {
+    const payload = token.split('.')[1]
+    if (!payload) return null
+
+    const normalized = payload.replace(/-/g, '+').replace(/_/g, '/')
+    const json = decodeURIComponent(
+      atob(normalized)
+        .split('')
+        .map((char) => '%' + ('00' + char.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    )
+    return JSON.parse(json)
+  } catch (error) {
+    console.error('Error decoding JWT payload:', error)
+    return null
+  }
+}
+
+export const getUserFromToken = (token) => {
+  const payload = decodeJwtPayload(token)
+  if (!payload?.name) return null
+
+  return {
+    name: payload.name,
+    email: payload.email,
+    role: payload.role
+  }
+}
+

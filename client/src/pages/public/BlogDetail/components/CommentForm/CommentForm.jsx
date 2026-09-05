@@ -1,102 +1,99 @@
-import React, { useState } from 'react'
-import { Form, Input, Button, Typography, Flex, theme } from 'antd'
+import React from 'react'
+import { Form, Input, Button, Typography, Flex } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { useAppContext } from '@/context/AppContext'
+import { useCreateComment } from '@/hooks'
+import toast from 'react-hot-toast'
 import './CommentForm.css'
 
-const { Title } = Typography
+const { Title, Text } = Typography
 const { TextArea } = Input
 
-const MAX_COMMENT_LENGTH = 650
-
-function CommentForm({ onSubmit, loading = false }) {
+function CommentForm({ blogId, onSubmitted }) {
   const [form] = Form.useForm()
-  const [submitting, setSubmitting] = useState(false)
-  const { token } = theme.useToken()
+  const { token, user } = useAppContext()
+  const { createComment, isCreating } = useCreateComment()
   const { t } = useTranslation()
 
-  const handleSubmit = async (values) => {
-    setSubmitting(true)
+  const authorName = token ? user?.name : null
+  const showNameField = !authorName
 
-    const result = await onSubmit({
-      name: values.name,
-      content: values.content
+  const handleFinish = async (values) => {
+    const name = authorName || values.name?.trim()
+
+    if (!name) {
+      toast.error(t('validation.nameRequired'))
+      return
+    }
+
+    const result = await createComment({
+      blog: blogId,
+      name,
+      content: values.content.trim()
     })
 
     if (result?.success) {
       form.resetFields()
+      if (onSubmitted) {
+        onSubmitted()
+      }
     }
-
-    setSubmitting(false)
   }
 
   return (
-    <Flex
-      vertical
-      gap={token.marginXS}
-      style={{ width: '100%' }}
-    >
-      <Title
-        level={3}
-      style={{
-          margin: 0,
-          marginBottom: token.marginXS,
-          fontWeight: token.fontWeightStrong,
-          color: token.colorTextBase
-        }}
-      >
-          {t('comment.title')}
-        </Title>
+    <Flex vertical className="comment-form">
+      <Title level={2} className="comment-form-title">
+        {t('blogDetail.comments.title')}
+      </Title>
+
+      <Text strong className="comment-form-subtitle">
+        {t('blogDetail.comments.leaveComment')}
+      </Text>
 
       <Form
         form={form}
         layout="vertical"
-        onFinish={handleSubmit}
-        style={{ width: '100%' }}
+        onFinish={handleFinish}
+        className="comment-form-fields"
       >
-        <Form.Item
-          name="name"
-          rules={[{ required: true, message: t('validation.nameRequired') }]}
-          style={{ marginBottom: token.marginSM }}
-        >
-          <Input
-            placeholder={t('comment.namePlaceholder')}
-            size="large"
-            style={{
-              borderRadius: token.borderRadiusLG
-            }}
-          />
-        </Form.Item>
+        {showNameField && (
+          <Form.Item
+            name="name"
+            rules={[
+              { required: true, message: t('validation.nameRequired') },
+              { min: 2, message: t('validation.nameMin') }
+            ]}
+          >
+            <Input
+              size="large"
+              placeholder={t('blogDetail.comments.namePlaceholder')}
+              aria-label={t('blogDetail.comments.namePlaceholder')}
+            />
+          </Form.Item>
+        )}
 
         <Form.Item
           name="content"
-          rules={[{ required: true, message: t('validation.commentRequired') }]}
-          style={{ marginBottom: token.marginSM }}
+          rules={[
+            { required: true, message: t('validation.commentRequired') }
+          ]}
         >
           <TextArea
-            placeholder={t('comment.contentPlaceholder')}
-            rows={5}
-            size="large"
-            maxLength={MAX_COMMENT_LENGTH}
-            showCount={{
-              formatter: ({ count, maxLength }) => `${count}/${maxLength}`
-            }}
-            style={{
-              borderRadius: token.borderRadiusLG
-            }}
+            rows={6}
+            placeholder={t('blogDetail.comments.commentPlaceholder')}
+            aria-label={t('blogDetail.comments.commentPlaceholder')}
+            maxLength={1000}
           />
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: 0 }}>
+        <Form.Item>
           <Button
             type="primary"
             htmlType="submit"
-            loading={loading || submitting}
             size="large"
-            style={{
-              borderRadius: token.borderRadiusLG
-            }}
+            loading={isCreating}
           >
-            {t('common.submit')}
+            {t('blogDetail.comments.submit')}
           </Button>
         </Form.Item>
       </Form>

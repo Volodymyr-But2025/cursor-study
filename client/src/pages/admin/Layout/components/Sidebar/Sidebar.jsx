@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { Menu, Flex, Button } from 'antd'
-import { AppstoreOutlined, PlusOutlined, UnorderedListOutlined, CommentOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, PlusOutlined, UnorderedListOutlined, MessageOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '@/constants/routes'
 import { useAppContext } from '@/context/AppContext'
@@ -30,7 +30,7 @@ function Sidebar() {
     },
     {
       key: ROUTES.ADMIN_COMMENTS,
-      icon: <CommentOutlined />,
+      icon: <MessageOutlined />,
       label: <NavLink to={ROUTES.ADMIN_COMMENTS}>{t('admin.sidebar.comments')}</NavLink>,
     },
   ]
