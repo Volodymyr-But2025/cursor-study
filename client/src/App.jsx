@@ -13,7 +13,7 @@ import {
   Register,
   ResetPassword
 } from '@/pages'
-import { useAppContext } from '@/context/AppContext'
+import { useAppContext } from '@/context'
 import { Toaster } from 'react-hot-toast'
 import { ROUTES } from '@/constants/routes'
 import 'quill/dist/quill.snow.css'

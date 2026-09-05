@@ -1,6 +1,6 @@
 import { Layout, Typography, Space, Flex } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { useAppContext } from '@/context/AppContext'
+import { useAppContext } from '@/context'
 import { ROUTES } from '@/constants/routes'
 import { assets } from '@/assets/assets'
 import { LoginForm } from './components'

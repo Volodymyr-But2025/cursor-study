@@ -1,6 +1,7 @@
 .admin-articles {
-  flex: 1;
-  min-height: 0;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
   padding: var(--ant-padding-lg);
   background: var(--ant-color-bg-container);
 }

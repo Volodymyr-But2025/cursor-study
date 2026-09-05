@@ -237,7 +237,7 @@ export function useProducts() {
 ```javascript
 // api/mutations/useProductActions.js
 import { useApiMutation } from '../../core'
-import { useAppContext } from '../../../context/AppContext'
+import { useAppContext } from '../../../context'
 
 export function useProductActions() {
   const { axios } = useAppContext()

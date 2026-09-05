@@ -1,4 +1,4 @@
-import { useAppContext } from '../../../context/AppContext'
+import { useAppContext } from '../../../context'
 import { useApiQuery } from '../../core'
 import { MESSAGES } from '../../../constants/messages'
 

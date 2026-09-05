@@ -67,7 +67,7 @@
   min-height: 0;
 }
 
-.admin-table-section {
+.admin-dashboard .admin-table-section {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -79,17 +79,17 @@
   border-radius: var(--ant-border-radius);
 }
 
-.admin-table-header {
+.admin-dashboard .admin-table-header {
   flex-shrink: 0;
   padding: var(--ant-padding-sm);
   border-bottom: var(--ant-line-width) solid var(--ant-color-border-secondary);
 }
 
-.admin-table-header-title {
+.admin-dashboard .admin-table-header-title {
   margin: 0;
 }
 
-.admin-table-content {
+.admin-dashboard .admin-table-content {
   flex: 1;
   overflow: auto;
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { theme } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { useAppContext } from '@/context/AppContext'
+import { useAppContext } from '@/context'
 import { ROUTES } from '@/constants/routes'
 import { IMAGE } from '@/constants/ui'
 import { assets } from '@/assets/assets'
